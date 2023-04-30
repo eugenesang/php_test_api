@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        (()=>{
+            const userStr = sessionStorage.getItem('user');
+            if(userStr ){
+                const user= JSON.parse(userStr);
+                if(!user.id){
+                    sessionStorage.clear();
+                    alert('User not logged in')
+                    location.href('/login.html');
+                }
+            }else{
+                sessionStorage.clear();
+                alert('User not logged in')
+                location.href('/login.html');
+            }
+        })();
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>The Best Accommodations</title>
+    <!--Font awesome CDN-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+    <!--Scroll reveal CDN-->
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    
+</head>
+<body>
+    <style>
+        div {background-color: rgb(105, 105, 105);}
+        div a {
+          text-decoration: none;
+          color: white;
+          font-size: 20px;
+          padding: 15px;
+          display:inline-block;
+        }
+        ul {
+          display: inline;
+          margin: 0;
+          padding: 0;
+        }
+        ul li {display: inline-block;}
+        ul li:hover {background: #555;}
+        ul li:hover ul {display: block;}
+        ul li ul {
+          position: absolute;
+          width: 200px;
+          display: none;
+        }
+        ul li ul li { 
+          background: #555; 
+          display: block; 
+        }
+        ul li ul li a {display:block !important;} 
+        ul li ul li:hover {background: #666;}
+        section{
+            margin: 3rem auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            text-align: center;
+        }
+        @media screen and (max-width: 768px){
+            
+        }
+        .loader{
+          display: grid;
+          align-items: center;
+          text-align: center;
+          margin: 0px auto;
+        }
+        .loader > img{
+          height: 200px;
+        }
+        .card {
+            
+            background-color: #e6e6e6;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      margin: 10px;
+      width: 350px;
+    }
+    .card > div{
+        background-color: transparent;
+    }
+    .card img {
+      border-radius: 5px 5px 0 0;
+      height: 250px;
+      object-fit: cover;
+      width: 100%;
+    }
+
+    .card-body {
+      padding: 10px;
+    }
+
+    .card-title {
+      font-size: 24px;
+      margin: 10px 0;
+    }
+
+    .stats{
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: .5rem;
+    }
+    .stats p{
+        text-align: center;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: .5rem;
+    }
+    .card-text {
+      margin: 10px 0;
+    }
+
+    .price {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .fa-map-marker-alt {
+      color: #f44336;
+      margin-right: 5px;
+    }
+
+    .fa-bed {
+      color: #9c27b0;
+      margin-right: 5px;
+    }
+
+    .fa-door-open {
+      color: #3f51b5;
+      margin-right: 5px;
+    }
+
+    .fa-dollar-sign {
+      color: #4caf50;
+      margin-right: 5px;
+    }
+
+    .card button{
+        padding: .75rem 2rem;
+        border-radius: .5rem;
+        border: none;
+        background-color: rgb(126, 188, 239);
+        display: block;
+        font-weight: bold;
+        margin: 0px auto;
+    }
+    </style>
+<header>
+    <div class="container">
+        <nav class="nav">
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+                <i class="fas fa-times"></i>
+            </div>
+            <a href="index.html" class="logo">
+                
+            </a>
+
+
+            <div>
+                <ul>
+                    <li>
+                        <a href="index.html">Home</a>
+                        <ul>
+                            <li><a href="aboutus.html">About Us</a></li>
+                            <li><a href="login.html">Login</a></li>
+                            <li><a href="register.html">Register</a></li>
+                            <li><a href="contactus.html">Contact Us</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <ul class="nav-list"> </ul>
+        </nav>
+    </div>
+    
+</header>
+<section>
+    
+</section>
+<script>
+const apiUrl= "https://php.kvresident.com";
+function logout(){
+    sessionStorage.clear();
+    location.reload();
+}
+async function bookRoom(hotelId){
+    document.querySelector(`#card_${hotelId}`).innerHTML ='<div class="loader"> <img src="images/loader.svg"></img> </div>'
+    const userId = JSON.parse(sessionStorage.getItem('user'))['id'];
+    var formdata = new FormData();
+    formdata.append("user", userId);
+    formdata.append("hotel", hotelId);
+
+    var requestOptions = {
+    method: 'POST',
+    body: formdata,
+    redirect: 'follow'
+    };
+
+    const res = await fetch("https://php.kvresident.com/hotels.php", requestOptions)
+    const data = await res.text();
+
+    location.reload();
+}
+(()=>{
+    const loggedOutList = ` <li class="nav-item">
+        <a href="aboutus.html" class="nav-link">About Us</a>
+    </li>
+   
+    <li class="nav-item">
+        <a href="login.html" class="nav-link">Login</a>
+    </li>
+    <li class="nav-item">
+        <a href="register.html" class="nav-link">Register</a>
+    </li>
+    <li class="nav-item">
+        <a href="contact.html" class="nav-link">Contact</a>
+    </li>`;
+    const loggedInList = `<ul class="nav-list">
+    <li class="nav-item">
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+    </li>
+    <li class="nav-item" onclick="logout()">
+        <a class="nav-link"  >Logout</a>
+    </li>
+</ul>`;
+
+const userStr = sessionStorage.getItem('user');
+const navList = document.querySelector('.nav-list');
+
+navList.innerHTML = loggedOutList;
+if(userStr){
+    const user= JSON.parse(userStr);
+    if(user.id){
+        navList.innerHTML = loggedInList;
+    }
+}
+function printHotel({id,name,location,price,vacant_rooms,total_rooms,image}, orders){
+  
+  return `
+  <div class="card" id="card_${id}">
+        <img src="images/${image}" alt="Lakeside Lodge">
+        <div class="card-body">
+          <h2 class="card-title"> ${name} </h2>
+          <article class="stats">
+            <p class="card-text"><i class="fas fa-map-marker-alt"></i> <span>${location}</span></p>
+            <p class="card-text"><i class="fas fa-dollar-sign"></i> <span class="price">${price}</span></p>
+            <p class="card-text"><i class="fas fa-door-open"></i> <span>${vacant_rooms}/${total_rooms} rooms</span></p>
+          </article>
+          ${orders.includes(+id)? '<button disabled >Order Reserved</button>' : `<button onclick="bookRoom(${id})">Book A reservation</button>`}
+        </div>
+    </div>
+  `;
+}
+async function loadHotels(){
+  document.querySelector('section').innerHTML = '<div class="loader" ><img src="/images/loader.svg" alt="Loading"></img></div>';
+  const {id, email}  = JSON.parse(sessionStorage.getItem('user'));
+  const ordersData = new FormData();
+  ordersData.append('id', id);
+  ordersData.append('email', email);
+
+  const rawHotels  = await fetch(apiUrl+'/raw_orders.php', {
+    method: 'POST',
+    body: ordersData
+  });
+  const orders = await rawHotels.json();
+
+  const res  = await fetch(apiUrl+'/get_hotels.php');
+
+  if(res.ok){
+    const hotels = await res.json();
+    const str = hotels.map(hotel=>printHotel(hotel, orders)).join('');
+    document.querySelector('section').innerHTML = str;
+  }
+}
+loadHotels();
+})();
+</script>
+<script src="main.js"></script>
+</body>
+</html>
